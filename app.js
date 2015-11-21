@@ -9,7 +9,7 @@ function handler (req, res) {
 
   var pageUrl = __dirname + '/index.html';
 
-  if(req.url == '/geoloc.html') {
+  if(req.url == '/geoloc') {
     pageUrl = __dirname + '/geoloc.html';
   }
 

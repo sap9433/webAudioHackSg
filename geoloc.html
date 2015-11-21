@@ -7,23 +7,25 @@ socket.on('news', function(data) {
 });
 
 
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  }
-}
+window.addEventListener("deviceorientation", function handleOrientation(event) {
+  var absolute = event.absolute;
+  var alpha    = event.alpha;
+  var beta     = event.beta;
+  var gamma    = event.gamma;
 
-function showPosition(position) {
-	document.getElementById('geoL').innerHTML = position;
+  var pos = alpha  + ' - ' + beta +  ' - ' + gamma  ;
+
+  document.getElementById('geoL').innerHTML = pos;
+
   socket.emit('movement', {
-    location: position
+    location: alpha
   });
-}
+
+}, true);
+
 </script>
 
 <body>
-	
-	<div id="geoL">
-		
-	</div>
+  <div id="geoL">
+  </div>
 </body>
