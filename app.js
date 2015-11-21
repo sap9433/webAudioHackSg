@@ -25,8 +25,13 @@ function handler (req, res) {
   });
 }
 
-io.of('mynsp').on('connection', function (socket) {
+io.on('connection', function (socket) {
   socket.on('clientMovement', function (data) {
-    socket.emit('movement', { location: data.delta });
+    //clients = io.of('mynsp').clients();
+
+    // io.sockets.map(function(e) {
+    //   return e.emit('movement', { location: data.delta });
+    // });
+    io.sockets.emit('movement', { location: data.delta });
   });
 });
