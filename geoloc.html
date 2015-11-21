@@ -1,11 +1,6 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
 var socket = io('http://10.205.125.46');
-socket.on('news', function(data) {
-
-
-});
-
 
 window.addEventListener("deviceorientation", function handleOrientation(event) {
   var absolute = event.absolute;
@@ -24,7 +19,7 @@ window.addEventListener("deviceorientation", function handleOrientation(event) {
 }, true);
 
 socket.on('movement', function (data) {
-    document.getElementById('geoL').innerHTML = data.location;
+    document.getElementById('geoL').innerHTML = data.location + ' hi ';
  });
 
 </script>
