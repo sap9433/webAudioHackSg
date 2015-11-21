@@ -13,15 +13,19 @@ window.addEventListener("deviceorientation", function handleOrientation(event) {
   var beta     = event.beta;
   var gamma    = event.gamma;
 
-  var pos = alpha  + ' - ' + beta +  ' - ' + gamma  ;
+  // var pos = alpha  + ' - ' + beta +  ' - ' + gamma  ;
 
-  document.getElementById('geoL').innerHTML = pos;
+  
 
-  socket.emit('movement', {
-    location: alpha
+  socket.emit('clientMovement', {
+    delta: alpha
   });
 
 }, true);
+
+socket.on('movement', function (data) {
+    document.getElementById('geoL').innerHTML = data.location;
+ });
 
 </script>
 
