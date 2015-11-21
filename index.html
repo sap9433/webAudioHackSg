@@ -1,113 +1,117 @@
+<script src="/socket.io/socket.io.js"></script>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="/socket.io/socket.io.js"></script>
 <script>
-  $(function () {
-    $(document).ready(function () {
+  var socket = io('http://10.205.125.46');
+  var AudioContext = window.AudioContext || window.webkitAudioContext;
+  var ac = new AudioContext();
 
-      Highcharts.setOptions({
-        global: {
-          useUTC: false
+  var chart;
+  socket.on('movement', function (data) {
+    console.log(data);
+    var coordinates = data.location; // data.location is single string/number value
+    // drawChart();
+  });
+
+  /*setInterval(function() {
+    var currentValue = Math.random()*10;
+    playSound(currentValue);
+    drawChart(currentValue);
+  }, 3000);*/
+
+  $('#stop').on('click', function() {
+    ac.suspend();
+  });
+
+  function playSound(pitch) {
+    var startTime = ac.currentTime;
+    var endTime = startTime + 3;
+
+    var amp = ac.createGain();
+    amp.connect(ac.destination);
+
+    var oscillator = ac.createOscillator();
+    oscillator.connect(amp);
+
+    amp.gain.value = 0;
+    amp.gain.setTargetAtTime(1, startTime, 0.1);
+    amp.gain.setTargetAtTime(0, endTime, 0.2);
+
+    oscillator.detune.value = pitch * 100;
+
+    oscillator.start(startTime);
+    oscillator.stop(endTime + 2);
+  }
+
+  function resetData(data) {
+    data = [];
+    return data;
+  }
+
+  function resetChart() {
+
+  }
+
+  function drawChart(plot) {
+    chart = chart || renderChart();
+    chart.series[0].addPoint([new Date().getTime(), plot], true, true);
+  }
+
+  function renderChart() {
+    return new Highcharts.Chart({
+      chart: {
+        type: 'spline',
+        renderTo: 'chart',
+        animation: Highcharts.svg, // don't animate in old IE
+        marginRight: 10
+      },
+      title: {
+        text: null,
+        subtitle: null
+      },
+      xAxis: {
+        enables: false,
+        type: 'datetime',
+        tickPixelInterval: 150
+      },
+      yAxis: {
+        title: {
+          text: null
         }
-      });
+      },
+      tooltip: {
+        enabled: false
+      },
+      legend: {
+        enabled: false
+      },
+      exporting: {
+        enabled: false
+      },
+      series: [{
+        name: 'Random data',
+        data: (function () {
+          // generate an array of random data
+          var data = [],
+                  time = (new Date()).getTime(),
+                  i;
 
+          for (i = -19; i <= 0; i += 1) {
+            data.push({
+              x: time + i * 1000,
+              y: Math.random()
+            });
+          }
+          return data;
+        }())
+      }]
+    })
+  }
 
-      var chart;
-      var socket = io('http://10.205.125.46');
-      var data = []; // this will be populated all the time
-      socket.on('news', function (data) {
-        console.log(data);
-        socket.emit('my other event', { my: 'data' });
-      });
-
-      socket.on('movement', function (data) {
-        console.log(data);
-        var coordinates = data.location; // data.location is an array
-        drawChart();
-      });
-
-      setInterval(function() {
-        drawChart(Math.random());
-      }, 500);
-
-      function initSound() {
-        var AudioContext = window.AudioContext || window.webkitAudioContext;
-        var ac = new AudioContext();
-
-        var osc = ac.createOscillator();
-        var gain = ac.createGain();
-        var out = ac.destination;
-      }
-
-      function playSound() {
-
-      }
-
-      function resetData(data) {
-        data = [];
-        return data;
-      }
-
-      function resetChart() {
-
-      }
-
-      function drawChart(plot) {
-        chart = chart || renderChart();
-        chart.series[0].addPoint([new Date().getTime(), plot], true, true);
-      }
-
-      function renderChart() {
-        return new Highcharts.Chart({
-          chart: {
-            type: 'spline',
-            renderTo: 'chart',
-            animation: Highcharts.svg, // don't animate in old IE
-            marginRight: 10
-          },
-          title: {
-            text: null,
-            subtitle: null
-          },
-          xAxis: {
-            enables: false,
-            type: 'datetime',
-            tickPixelInterval: 150
-          },
-          yAxis: {
-            title: {
-              text: null
-            }
-          },
-          tooltip: {
-            enabled: false
-          },
-          legend: {
-            enabled: false
-          },
-          exporting: {
-            enabled: false
-          },
-          series: [{
-            name: 'Random data',
-            data: (function () {
-              // generate an array of random data
-              var data = [],
-                      time = (new Date()).getTime(),
-                      i;
-
-              for (i = -19; i <= 0; i += 1) {
-                data.push({
-                  x: time + i * 1000,
-                  y: Math.random()
-                });
-              }
-              return data;
-            }())
-          }]
-        })
-      }
-    });
+  Highcharts.setOptions({
+    global: {
+      useUTC: false
+    }
   });
 </script>
 
