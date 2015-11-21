@@ -13,13 +13,13 @@ window.addEventListener("deviceorientation", function handleOrientation(event) {
   
 
   socket.emit('clientMovement', {
-    delta: alpha
+    delta: Number.parseInt(alpha.toFixed(0))
   });
 
 }, true);
 
 socket.on('movement', function (data) {
-    document.getElementById('geoL').innerHTML = data.location + ' hi ';
+    document.getElementById('geoL').innerHTML = data.location;
  });
 
 </script>
