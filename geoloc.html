@@ -2,26 +2,43 @@
 <script>
 var socket = io('http://10.205.125.46');
 
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
+
 window.addEventListener("deviceorientation", function handleOrientation(event) {
   var absolute = event.absolute;
-  var alpha    = event.alpha;
-  var beta     = event.beta;
-  var gamma    = event.gamma;
+  var alpha = event.alpha;
+  var beta = event.beta;
+  var gamma = event.gamma;
 
   // var pos = alpha  + ' - ' + beta +  ' - ' + gamma  ;
 
-  
+ (debounce(function() {
+    socket.emit('clientMovement', {
+      delta: Number.parseInt(alpha && alpha.toFixed(0))
+    });
+  }, 250))();
 
-  socket.emit('clientMovement', {
-    delta: Number.parseInt(alpha.toFixed(0))
-  });
+
+
 
 }, true);
 
-socket.on('movement', function (data) {
-    document.getElementById('geoL').innerHTML = data.location;
- });
-
+socket.on('movement', function(data) {
+  document.getElementById('geoL').innerHTML = data.location;
+});
 </script>
 
 <body>
