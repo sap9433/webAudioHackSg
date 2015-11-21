@@ -5,7 +5,15 @@ var fs = require('fs');
 app.listen(80);
 
 function handler (req, res) {
-  fs.readFile(__dirname + '/index.html',
+  console.log(req.url);
+
+  var pageUrl = __dirname + '/index.html';
+
+  if(req.url == '/geoloc.html') {
+    pageUrl = __dirname + '/geoloc.html';
+  }
+
+  fs.readFile(pageUrl,
   function (err, data) {
     if (err) {
       res.writeHead(500);

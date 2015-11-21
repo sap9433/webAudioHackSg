@@ -1,0 +1,29 @@
+<script src="/socket.io/socket.io.js"></script>
+<script>
+var socket = io('http://10.205.125.46');
+socket.on('news', function(data) {
+
+
+});
+
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  }
+}
+
+function showPosition(position) {
+	document.getElementById('geoL').innerHTML = position;
+  socket.emit('movement', {
+    location: position
+  });
+}
+</script>
+
+<body>
+	
+	<div id="geoL">
+		
+	</div>
+</body>
