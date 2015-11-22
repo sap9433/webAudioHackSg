@@ -9,15 +9,16 @@
   var chart;
   socket.on('movement', function (data) {
     console.log(data);
-    var coordinates = data.location; // data.location is single string/number value
-    // drawChart();
+    var currentValue = data.location;
+    playSound(currentValue);
+    drawChart(currentValue);
   });
 
   /*setInterval(function() {
     var currentValue = Math.random()*10;
     playSound(currentValue);
     drawChart(currentValue);
-  }, 3000);*/
+  }, 500);*/
 
   $('#stop').on('click', function() {
     ac.suspend();
@@ -54,7 +55,7 @@
 
   function drawChart(plot) {
     chart = chart || renderChart();
-    chart.series[0].addPoint([new Date().getTime(), plot], true, true);
+    chart.series[0].addPoint([new Date().getTime() + 10, plot], true, true);
   }
 
   function renderChart() {
